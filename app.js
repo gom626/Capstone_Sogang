@@ -39,7 +39,7 @@ app.post('/',function(request,response){
 	mjson.email="gom626@gmail.com"
 	mjson.stuno="20151600"
 	console.log(mjson)
-	fs.appendFile('./sample_post.txt',JSON.stringify(r)+"\n",'utf8',function(error,data){
+	fs.appendFile('./sample_post.txt',JSON.stringify(mjson)+"\n",'utf8',function(error,data){
 		if(error) {throw error};
 	})
 	response.send(JSON.stringify(mjson))
