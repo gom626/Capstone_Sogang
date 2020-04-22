@@ -85,22 +85,19 @@ app.get("/temper", function(req, res) {
 	qstr+=etime;
 	qstr+="', '%Y-%m-%d-%H-%i-%s')";
 	console.log(qstr);
-	var html="{";
+	var html={};
 	
 	if(typeof r.device_id=="undefined"){
 		console.log("1")
 		let rows=connection.query(qstr);
 		console.log("1Got "+rows.length+" records");
                         for(var i=0;i<rows.length;i++){
-                                if(i!==0){
-                                        html+=",";
-                                }
-                                var line ="{ 'sequence number' : " + rows[i].number+', '
-                                line+="'time' : "+ rows[i].date+' ,'
-                                line+="'temperature' : "+ rows[i].temper+', '
-                                line+="'device_id' : " + rows[i].device_id
-                                line+=" }"
-                                html+=line;
+				var line={}
+                                line['sequence number']=rows[i].number
+                                line['time']=rows[i].date
+                                line['temperature']=rows[i].temper
+				line['device_id']=rows[i].device_id
+               			html[i]=line;
                         }
 		/*connection.query(qstr,function(err,rows,cols){
 			if(err){
@@ -132,19 +129,14 @@ app.get("/temper", function(req, res) {
 		let rows=connection.query(qstr2)
 		if(rows.length!==0){
 			console.log("2 Got "+rows.length+" records");
-                                for(var i=0;i<rows.length;i++){
-                                        //console.log(rows[i])
-                                        if(i!==0){
-                                                html+=",";
-                                        }
-                                        var line ="{ 'sequence number' : " + rows[i].number+', '
-                                        line+="'time' : "+ rows[i].date+', '
-                                        line+="'temperature' : "+ rows[i].temper+', '
-                                        line+="'device_id' : " + rows[i].device_id
-                                        line+=" }"
-                                        //console.log(line)
-                                        html+=line;
-                                }
+				for(var i=0;i<rows.length;i++){
+                                var line={}
+                                line['sequence number']=rows[i].number
+                                line['time']=rows[i].date
+                                line['temperature']=rows[i].temper
+                                line['device_id']=rows[i].device_id
+                                html[i]=line;
+                        	}
                                 flag=true;
                                 console.log(flag)
                                 race=true;
@@ -183,18 +175,15 @@ app.get("/temper", function(req, res) {
 			console.log("3")
 			let rows=connection.query(qstr)
 			console.log("3Got "+rows.length+" records");
-                                for(var i=0;i<rows.length;i++){
-                                        if(i!==0){
-                                                html+=",";
-                                        }
-                                        var line ="{ 'sequence number' : " + rows[i].number+', '
-                                        line+="'time' : "+ rows[i].date+', '
-                                        line+="'temperature' : "+ rows[i].temper+', '
-                                        line+="'device_id' : " + rows[i].device_id
-                                        line+=" }"
-                                        html+=line;
-                                }
-		/*
+			for(var i=0;i<rows.length;i++){
+                                var line={}
+                                line['sequence number']=rows[i].number
+                                line['time']=rows[i].date
+                                line['temperature']=rows[i].temper
+                                line['device_id']=rows[i].device_id
+                                html[i]=line;
+                        }
+			/*
 			connection.query(qstr,function(err,rows,cols){
                         	if(err){
                                 	throw err;
@@ -217,7 +206,6 @@ app.get("/temper", function(req, res) {
 			*/
 		}
 	}
-	html+="}"
 	//console.log(html);
 	/*
 ########  USING JOSN OBJECT CODE
@@ -277,8 +265,8 @@ app.get("/temper", function(req, res) {
   	//where str_to_date('2020-04-07-12', '%Y-%m-%d-%H') < date and date <str_to_date('2020-04-07-15','%Y-%m-%d-%H');	
     	*/
 //	console.log(html)
-	res.writeHead(200,{'Content-Type':'application/json'})
-	//res.send(JSON.stringify(html));
+	//res.writeHead(200,{'Content-Type':'application/json'})
+	res.send(JSON.stringify(html,null,'\t'));
 	res.end(html)
 });
 
